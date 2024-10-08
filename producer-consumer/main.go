@@ -90,7 +90,7 @@ func pizzeria(pizzaMaker *Producer) {
 			case quitChan := <-pizzaMaker.quit:
 				close(pizzaMaker.data)
 				close(quitChan)
-        return
+				return
 			}
 		}
 	}
@@ -108,5 +108,24 @@ func main() {
 	}
 
 	go pizzeria(pizzaJob)
+
+	for i := range pizzaJob.data {
+		if i.orderNumber <= numberOfPizzas {
+			if i.success {
+				color.Green(i.message)
+				color.Green("order %d out for delivery", i.orderNumber)
+			} else {
+				color.Red(i.message)
+				color.Red("upset customer")
+			}
+		} else {
+			color.Cyan("time to go home")
+			err := pizzaJob.Close()
+
+			if err != nil {
+				color.Red("error closing change: %s", err)
+			}
+		}
+	}
 
 }
