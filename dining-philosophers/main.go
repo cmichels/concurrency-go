@@ -65,4 +65,38 @@ func diningProblem(philosopher Philosopher,
 	seated *sync.WaitGroup) {
 	defer wg.Done()
 
+	fmt.Printf("%s is seated at the table.\n", philosopher.name)
+	seated.Done()
+	seated.Wait()
+
+	for i := hunger; i > 0; i-- {
+
+		if philosopher.leftFork > philosopher.rightFork {
+
+			forks[philosopher.rightFork].Lock()
+			fmt.Printf("\t%s has right fork\n", philosopher.name)
+			forks[philosopher.leftFork].Lock()
+			fmt.Printf("\t%s has left fork\n", philosopher.name)
+		} else {
+			forks[philosopher.leftFork].Lock()
+			fmt.Printf("\t%s has left fork\n", philosopher.name)
+			forks[philosopher.rightFork].Lock()
+			fmt.Printf("\t%s has right fork\n", philosopher.name)
+		}
+
+		fmt.Printf("\t%s has both forks and is eating\n", philosopher.name)
+		time.Sleep(eatTime)
+
+		fmt.Printf("\t%s is thinking\n", philosopher.name)
+		time.Sleep(thinkTime)
+
+		forks[philosopher.leftFork].Unlock()
+		forks[philosopher.rightFork].Unlock()
+
+		fmt.Printf("\t%s forks down\n", philosopher.name)
+	}
+
+	fmt.Printf("%s is satisfied\n", philosopher.name)
+	fmt.Println("left the table")
+
 }
