@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/subtle"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -31,9 +33,57 @@ func (p *Producer) Close() error {
 	return <-ch
 }
 
+func makePizza(pizzaNumber int) *PizzaOrder {
+	pizzaNumber++
+
+	if pizzaNumber <= numberOfPizzas {
+		delay := rand.Intn(5) + 1
+		fmt.Printf("received order %d\n", pizzaNumber)
+
+		rnd := rand.Intn(12) + 1
+		msg := ""
+		success := false
+
+		if rnd < 5 {
+			pizzasFailed++
+		} else {
+			pizzasMade++
+		}
+		total++
+
+		fmt.Printf("making pizza %d. ready in %d seconds\n", pizzaNumber, delay)
+		time.Sleep(time.Duration(delay) * time.Second)
+
+		if rnd <= 2 {
+			msg = fmt.Sprintf("*** ran out of ingredients for pizza %d", pizzaNumber)
+		} else if rnd <= 4 {
+			msg = fmt.Sprintf("*** cook quit for %d", pizzaNumber)
+		} else {
+			success = true
+			msg = fmt.Sprintf("pizza order %d is read", pizzaNumber)
+		}
+
+		p := PizzaOrder{
+			orderNumber: pizzaNumber,
+			message:     msg,
+			success:     success,
+		}
+
+		return &p
+
+	}
+
+	return &PizzaOrder{
+		orderNumber: pizzaNumber,
+	}
+}
+
 func pizzeria(pizzaMaker *Producer) {
+
+	var i = 0
 	for {
-     
+
+		currentPizza := makePizza(i)
 	}
 }
 
