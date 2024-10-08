@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/subtle"
 	"fmt"
 	"math/rand"
 	"time"
@@ -82,8 +81,18 @@ func pizzeria(pizzaMaker *Producer) {
 
 	var i = 0
 	for {
-
 		currentPizza := makePizza(i)
+
+		if currentPizza != nil {
+			i = currentPizza.orderNumber
+			select {
+			case pizzaMaker.data <- *currentPizza:
+			case quitChan := <-pizzaMaker.quit:
+				close(pizzaMaker.data)
+				close(quitChan)
+        return
+			}
+		}
 	}
 }
 
