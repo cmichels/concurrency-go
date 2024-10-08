@@ -2,17 +2,38 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
+func printSomthing(s string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Println(s)
 
-func printSomthing(s string)  {
-  fmt.Println(s)
 }
 func main() {
-  
-  go printSomthing("first thing to print")
 
-  time.Sleep(1 * time.Second)
-  printSomthing("second to print")
+	var wg sync.WaitGroup
+
+	words := []string{"alpha",
+		"beta",
+		"delta",
+		"gamma",
+		"pi",
+		"zeta",
+		"eta",
+		"theta",
+		"epsilon",
+	}
+
+	wg.Add(len(words))
+
+	for i, x := range words {
+		go printSomthing(fmt.Sprintf("%d:%s", i, x), &wg)
+	}
+
+	wg.Wait()
+
+  wg.Add(1)
+  
+	printSomthing("second to print", &wg)
 }
