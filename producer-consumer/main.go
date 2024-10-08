@@ -128,25 +128,23 @@ func main() {
 		}
 	}
 
+	color.Cyan("----------------")
+	color.Cyan("done for the day")
 
-  color.Cyan("----------------")
-  color.Cyan("done for the day")
+	color.Cyan("made %d, failed %d, total %d", pizzasMade, pizzasFailed, total)
 
-  color.Cyan("made %d, failed %d, total %d", pizzasMade, pizzasFailed, total)
+	switch {
+	case pizzasFailed > 9:
+		color.Red("it was an awefule day")
+	case pizzasFailed > 6:
+		color.Red("not a good day")
+	case pizzasFailed >= 4:
+		color.Red("it was ok")
+	case pizzasFailed >= 2:
+		color.Yellow("pretty good day")
+	default:
+		color.Green("great day")
 
-
-  switch  {
-  case pizzasFailed > 9:
-  color.Red("it was an awefule day")
-  case pizzasFailed > 6:
-  color.Red("not a good day")
-  case pizzasFailed >= 4:
-  color.Red("it was ok")
-  case pizzasFailed >= 2:
-  color.Yellow("pretty good day")
-  default:
-  color.Green("great day")
-    
-  }
+	}
 
 }
