@@ -18,24 +18,19 @@ func Test_printSomethin(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-  go printSomthing("epsilon", &wg)
+	go printSomthing("epsilon", &wg)
 
+	wg.Wait()
 
-  wg.Wait()
+	_ = w.Close()
 
+	result, _ := io.ReadAll(r)
 
-  _ = w.Close()
+	output := string(result)
 
-  result, _ := io.ReadAll(r)
+	os.Stdout = stdOut
 
-
-  output := string(result)
-
-
-  os.Stdout = stdOut
-
-
-  if !strings.Contains(output, "epsilon"){
-  t.Errorf("expected %s. got %s", "epsilon", output)
-  }
+	if !strings.Contains(output, "epsilon") {
+		t.Errorf("expected %s. got %s", "epsilon", output)
+	}
 }
