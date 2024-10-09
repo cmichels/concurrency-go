@@ -25,6 +25,9 @@ var eatTime = 1 * time.Second
 var thinkTime = 3 * time.Second
 var sleepTime = 1 * time.Second
 
+var orderLock sync.Mutex
+var finishedList []Philosopher
+
 func main() {
 
 	fmt.Println("dining philosopers problem")
@@ -34,6 +37,7 @@ func main() {
 	dine()
 
 	fmt.Println("the table is empty")
+	printFinished()
 
 }
 
@@ -57,6 +61,18 @@ func dine() {
 	}
 
 	wg.Wait()
+}
+
+func finish(philosopher Philosopher) {
+	orderLock.Lock()
+	finishedList = append(finishedList, philosopher)
+	orderLock.Unlock()
+}
+
+func printFinished() {
+	for i, p := range finishedList {
+		fmt.Printf("%s finished at %d\n", p.name, i)
+	}
 }
 
 func diningProblem(philosopher Philosopher,
@@ -98,5 +114,6 @@ func diningProblem(philosopher Philosopher,
 
 	fmt.Printf("%s is satisfied\n", philosopher.name)
 	fmt.Println("left the table")
+	finish(philosopher)
 
 }
